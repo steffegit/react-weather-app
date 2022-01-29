@@ -20,7 +20,7 @@ function App() {
     }
   };
 
-  let date = new Date().toString().split(" ").splice(1, 3).join(" ");
+  let date = new Date().toString().split(" ").splice(1, 3).join("-");
 
   //TODO: on clear display nothing
   // on snow make snow animation
@@ -33,14 +33,16 @@ function App() {
     <div className="App">
       <div className="mica-effect">
         <div className="search">
-          <input
-            type="text"
-            className="search-bar"
-            placeholder="Search..."
-            onChange={(e) => setQuery(e.target.value)}
-            value={query}
-            onKeyPress={search}
-          ></input>
+          <div className="search-top">
+            <input
+              type="text"
+              className="search-bar"
+              placeholder="Search..."
+              onChange={(e) => setQuery(e.target.value)}
+              value={query}
+              onKeyPress={search}
+            ></input>
+          </div>
           {typeof weather.main != "undefined" ? (
             <div className="weather-info">
               <div className="weather-name">{weather.name}</div>
@@ -48,6 +50,7 @@ function App() {
                 {Math.round(weather.main.temp)}°C
               </div>
               <div className="weather-weather">{weather.weather[0].main}</div>
+              <hr></hr>
               <span>{date}</span>
             </div>
           ) : (
