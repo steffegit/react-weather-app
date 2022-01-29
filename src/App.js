@@ -1,5 +1,4 @@
 import { useState } from "react";
-import moment from "moment";
 
 function App() {
   const api_key = "97fd33a2788503d04d9cae4779d8207b";
@@ -22,13 +21,6 @@ function App() {
 
   let date = new Date().toString().split(" ").splice(1, 3).join("-");
 
-  //TODO: on clear display nothing
-  // on snow make snow animation
-  // on rain make rain animation
-  // on sunny make sun animation
-  // maybe implement dark-mode
-
-  //not animations but svg's in the background
   return (
     <div className="App">
       <div className="mica-effect">
