@@ -1,75 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   const api_key = process.env.REACT_APP_API_KEY;
   const base_url = "https://api.openweathermap.org/data/2.5/";
 
   const [query, setQuery] = useState("");
-  // const [weather, setWeather] = useState({});
-  const [weather, setWeather] = useState({
-    coord: {
-      lon: -122.08,
-      lat: 37.39,
-    },
-    weather: [
-      {
-        id: 800,
-        main: "Clear",
-        description: "clear sky",
-        icon: "01d",
-      },
-    ],
-    base: "stations",
-    main: {
-      temp: 282.55,
-      feels_like: 281.86,
-      temp_min: 280.37,
-      temp_max: 284.26,
-      pressure: 1023,
-      humidity: 100,
-    },
-    visibility: 10000,
-    wind: {
-      speed: 1.5,
-      deg: 350,
-    },
-    clouds: {
-      all: 1,
-    },
-    dt: 1560350645,
-    sys: {
-      type: 1,
-      id: 5122,
-      message: 0.0139,
-      country: "US",
-      sunrise: 1560343627,
-      sunset: 1560396563,
-    },
-    timezone: -25200,
-    id: 420006353,
-    name: "Mountain View",
-    cod: 200,
-  });
+  const [weather, setWeather] = useState({});
+
+  const fetchAPI = (query) => {
+    fetch(`${base_url}weather?q=${query}&units=metric&appid=${api_key}`)
+      .then((res) => res.json())
+      .then((r) => {
+        setWeather(r);
+        setQuery("");
+        console.log(r);
+      });
+  };
 
   const search = (e) => {
     if (e.key === "Enter") {
-      fetch(`${base_url}weather?q=${query}&units=metric&appid=${api_key}`)
-        .then((res) => res.json())
-        .then((r) => {
-          setWeather(r);
-          setQuery("");
-          console.log(r);
-        });
+      fetchAPI(query);
     }
   };
 
-  let date = new Date().toString().split(" ").splice(1, 3).join("-");
+  useEffect(() => {
+    fetchAPI("Bucharest");
+  }, []);
+
+  // let date = new Date().toString().split(" ").splice(1, 3).join("-");
   // let date = new Date().toLocaleDateString("ro-RO");
 
   return (
-    <div className="w-full flex flex-col items-center justify-center pt-10 space-y-6 sm:space-y-10 p-8">
+    <div className="w-full flex flex-col items-center justify-center pt-6 sm:pt-10 space-y-6 sm:space-y-10 p-8">
       <div className="w-full max-w-3xl flex justify-between text-2xl">
-        <a href="/">React Weather</a>
+        <a className="font-medium" href="/">
+          React Weather
+        </a>
         <a
           target="__blank"
           href="https://github.com/CodexDevv/react-weather-app"
@@ -94,7 +60,7 @@ function App() {
           </svg>
         </a>
       </div>
-      <div className="w-full bg-gray-200 rounded-full max-w-3xl flex ring-1 ring-gray-300 shadow-sm">
+      <div className="w-full bg-white/80 backdrop-blur-sm rounded-full max-w-3xl flex ring-1 ring-white/50 shadow-sm">
         <div className="flex items-center justify-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +89,7 @@ function App() {
         />
       </div>
       {typeof weather.main != "undefined" ? (
-        <div className="flex flex-col space-y-8 w-full max-w-3xl bg-gray-100 px-6 py-12 pt-6 rounded-lg ring-1 ring-gray-300 shadow-sm">
+        <div className="flex flex-col space-y-8 w-full max-w-3xl backdrop-blur bg-white/30 px-6 py-12 pt-6 rounded-lg ring-1 ring-white/50 shadow-sm">
           <div className="opacity-70 text-center pb-6 sm:text-start sm:p-0">
             Current Weather
           </div>
@@ -134,6 +100,7 @@ function App() {
                 <div>
                   <img
                     src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                    alt="thumbnail"
                   />
                 </div>
                 <div className="text-5xl">
@@ -257,7 +224,7 @@ function App() {
                   </svg>
                   <div>Pressure</div>
                 </div>
-                <div className="font-semibold">{weather.main.pressure} Pa</div>
+                <div className="font-semibold">{weather.main.pressure} hPa</div>
               </div>
             </div>
           </div>
