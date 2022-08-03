@@ -19,14 +19,12 @@ function App() {
   };
 
   const fetchForecastAPI = async (query) => {
-    await fetch(
-      `${base_url}forecast/daily?q=${query}&cnt=7&units=metric&appid=${api_key}`
-    )
+    await fetch(`${base_url}forecast?q=${query}&units=metric&appid=${api_key}`)
       .then((res) => res.json())
       .then((r) => {
-        setForecast(r);
+        setForecast(r.list);
         setQuery("");
-        console.log(r);
+        console.log(r.list);
       });
   };
 
@@ -42,8 +40,21 @@ function App() {
     // eslint-disable-next-line
   }, []);
 
-  // let date = new Date().toString().split(" ").splice(1, 3).join("-");
-  // let date = new Date().toLocaleDateString("ro-RO");
+  const convertToDate = (dt) => {
+    const list = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const date = new Date(dt * 1000);
+    const index = date.getDay();
+    // console.log(index);
+    return list[index];
+  };
 
   return (
     <div className="w-full flex flex-col items-center justify-center pt-6 sm:pt-10 space-y-6 sm:space-y-10 p-8">
@@ -248,7 +259,37 @@ function App() {
             </div>
           </div>
           {/* item.weather[0].main item.weather[0].icon item.main.temp_max item.main.temp_min item.dt */}
-          <div></div>
+          {typeof forecast.length != "undefined" ? (
+            <div className="flex flex-col space-y-4 w-full max-w-3xl backdrop-blur bg-white/30 px-6 py-12 pt-6 rounded-lg ring-1 ring-white/50 shadow-md shadow-white/5">
+              <div className="opacity-70 text-center pb-6 sm:text-start sm:p-0">
+                5 Day Forecast
+              </div>
+              <div className="flex justify-between gap-2">
+                {forecast.map((item, idx) =>
+                  (idx + 1) % 8 === 0 ? (
+                    <div className="p-2">
+                      <div className="text-center">
+                        {convertToDate(item.dt)}
+                      </div>
+                      <div>
+                        <img
+                          src={`http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`}
+                          alt="thumbnail"
+                        />
+                      </div>
+                      <div className="text-center text-xl font-bold">
+                        {item.weather[0].main}
+                      </div>
+                      <div className="text-center">
+                        {Math.round(item.main.temp_max)}°/
+                        {Math.round(item.main.temp_min)}°
+                      </div>
+                    </div>
+                  ) : null
+                )}
+              </div>
+            </div>
+          ) : null}
         </>
       ) : (
         ""
