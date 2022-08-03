@@ -7,6 +7,10 @@ function App() {
   const [query, setQuery] = useState("");
   const [weather, setWeather] = useState({});
   const [forecast, setForecast] = useState({});
+  // eslint-disable-next-line
+  const [savedQuery, setSavedQuery] = useState(
+    localStorage.getItem("savedQuery")
+  );
 
   const fetchAPI = async (query) => {
     await fetch(`${base_url}weather?q=${query}&units=metric&appid=${api_key}`)
@@ -24,19 +28,26 @@ function App() {
       .then((r) => {
         setForecast(r.list);
         setQuery("");
-        console.log(r.list);
+        // console.log(r.list);
       });
   };
 
   const search = (e) => {
     if (e.key === "Enter") {
       fetchAPI(query);
+      fetchForecastAPI(query);
+      localStorage.setItem("savedQuery", query);
     }
   };
 
   useEffect(() => {
-    fetchAPI("Bucharest");
-    fetchForecastAPI("Bucharest");
+    if (savedQuery) {
+      fetchAPI(savedQuery);
+      fetchForecastAPI(savedQuery);
+    } else {
+      fetchAPI("Bucharest");
+      fetchForecastAPI("Bucharest");
+    }
     // eslint-disable-next-line
   }, []);
 
@@ -264,11 +275,11 @@ function App() {
               <div className="opacity-70 text-center pb-6 sm:text-start sm:p-0">
                 5 Day Forecast
               </div>
-              <div className="flex justify-between gap-2">
+              <div className="grid grid-cols-2 gap-4 sm:flex sm:justify-between sm:gap-2">
                 {forecast.map((item, idx) =>
                   (idx + 1) % 8 === 0 ? (
-                    <div className="p-2">
-                      <div className="text-center">
+                    <div key={idx} className="p-2">
+                      <div className="text-center font-medium">
                         {convertToDate(item.dt)}
                       </div>
                       <div>
