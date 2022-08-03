@@ -10,3 +10,10 @@
 ### I wish I:
 - Made a better design
 - Maybe added some more animations
+
+### Came back to the project in 2022:
+- I did make a better design
+- Unfortunately no animations
+- Better written code
+- LocalStorage usage
+- Responsive design
